@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nngeom : neural networks as geometric objects</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+<nav class="side">
+  <a class="logo" href="index.html">nn<span>geom</span></a>
+  <div class="group">Start here</div>
+  <a class="active" href="index.html">Overview</a>
+  <a href="index.html#install">Installation</a>
+  <a href="index.html#quickstart">Quickstart</a>
+  <a href="index.html#concepts">Core concepts</a>
+  <div class="group">Reference</div>
+  <a href="api.html">API reference</a>
+  <a href="nlp.html">NLP geometry</a>
+  <a href="examples.html">Examples</a>
+</nav>
+<main>
+
+<div class="hero">
+  <h1>nn<span>geom</span></h1>
+  <p>Measure, visualize, and reason about the geometry of neural networks:
+     loss landscapes, curvature, representation structure, training trajectories,
+     token geometry, and model comparison. A trained model is not just a function.
+     It is a shape, and nngeom lets you inspect it.</p>
+  <div class="actions">
+    <a class="primary" href="index.html#quickstart">Get started</a>
+    <a class="ghost" href="api.html">API reference</a>
+    <a class="ghost" href="nlp.html">NLP geometry</a>
+  </div>
+</div>
+
+<div class="pill-row">
+  <span class="pill"><b>70+</b> analysis functions</span>
+  <span class="pill"><b>numpy</b> core, zero framework lock-in</span>
+  <span class="pill"><b>PyTorch</b> adapter with exact autograd HVPs</span>
+  <span class="pill"><b>92</b> passing tests against known geometry</span>
+  <span class="pill"><b>MIT</b> licensed</span>
+</div>
+
+<h2 id="why"><span class="hash">#</span>Why nngeom</h2>
+<p>Deep learning is full of geometric language: "the model found a flat minimum",
+"the representations collapsed", "the fine-tune drifted". nngeom turns those metaphors
+into <strong>measurements</strong>. Every analysis returns numbers you can compare, log,
+and test, and the automated report flags suspicious geometry (saddle points, collapse,
+oscillating optimizers) instead of only drawing pretty plots.</p>
+
+<div class="grid">
+  <div class="card"><span class="tag">lossland</span><h3><a href="api.html#lossland">Loss landscapes</a></h3>
+    <p>Interpolation curves, barrier heights, 2D slices, sharpness, basin width, curved low-loss paths between models.</p></div>
+  <div class="card"><span class="tag">curvature</span><h3><a href="api.html#curvature">Curvature</a></h3>
+    <p>Hessian spectra via Lanczos and power iteration, Hutchinson trace, per-layer curvature. Matrix-free, so it scales.</p></div>
+  <div class="card"><span class="tag">representations</span><h3><a href="api.html#representations">Representations</a></h3>
+    <p>CKA, SVCCA, Procrustes, linear probes, collapse and anisotropy detection, neuron matching, drift reports.</p></div>
+  <div class="card"><span class="tag">manifolds</span><h3><a href="api.html#manifolds">Manifolds</a></h3>
+    <p>Intrinsic dimension (TwoNN), effective rank, kNN graphs, outlier scores, random projections.</p></div>
+  <div class="card"><span class="tag">trajectories</span><h3><a href="api.html#trajectories">Trajectories</a></h3>
+    <p>Path length, tortuosity, directional persistence, phase-change detection, layerwise drift over training.</p></div>
+  <div class="card"><span class="tag">dynamics</span><h3><a href="api.html#dynamics">Optimization dynamics</a></h3>
+    <p>Gradient noise scale, batch gradient alignment, empirical Fisher, SAM sharpness, local linearity.</p></div>
+  <div class="card"><span class="tag">compare</span><h3><a href="api.html#compare">Model comparison</a></h3>
+    <p>Per-layer drift, task vectors and their alignment, model soups, Hessian eigenspace overlap.</p></div>
+  <div class="card"><span class="tag">nlp</span><h3><a href="nlp.html">NLP geometry</a></h3>
+    <p>Ten token-geometry tools: token trajectories, prompt divergence, polysemy, repetition attractors, novelty.</p></div>
+  <div class="card"><span class="tag">report</span><h3><a href="api.html#report">Automated report</a></h3>
+    <p>One call profiles a model, warns about bad geometry, and exports a shareable HTML report with figures.</p></div>
+</div>
+
+<h2 id="install"><span class="hash">#</span>Installation</h2>
+<pre><code>pip install nngeom            <span class="c"># core, numpy only</span>
+pip install nngeom[torch]     <span class="c"># + PyTorch adapter (autograd HVPs, hooks)</span>
+pip install nngeom[viz]       <span class="c"># + matplotlib plotting</span>
+pip install nngeom[all]       <span class="c"># everything</span></code></pre>
+<div class="note"><b>No framework lock-in.</b> The core library depends only on numpy.
+Every analysis works on plain parameter dictionaries via <code>Model.from_function</code>,
+and all representation and NLP tools take ordinary numpy arrays, so hidden states from
+PyTorch, JAX, or TensorFlow models all work the same way.</div>
+
+<h2 id="quickstart"><span class="hash">#</span>Quickstart</h2>
+<pre><code><span class="k">import</span> nngeom <span class="k">as</span> ng
+
+<span class="c"># wrap a PyTorch model with a loss closure</span>
+model = ng.Model(net, loss_fn=<span class="k">lambda</span> m, b: F.cross_entropy(m(b[0]), b[1]))
+
+<span class="c"># one call: loss geometry, curvature, warnings, suggested next steps</span>
+report = ng.analyze(model, batch, depth=<span class="s">"standard"</span>)
+<span class="k">print</span>(report.summary())
+report.to_html(<span class="s">"geometry_report.html"</span>)</code></pre>
+
+<p>A few one-liners that answer real questions:</p>
+<pre><code><span class="c"># Is my fine-tune in the same basin as the base model?</span>
+ng.linear_interpolation(base, tuned, batch).barrier_height()
+
+<span class="c"># How sharp is the minimum I converged to?</span>
+ng.hessian_spectrum(model, batch, k=5).top_eigenvalue
+
+<span class="c"># Did my representations collapse?</span>
+ng.collapse_score(activations)
+
+<span class="c"># Are my minibatch gradients mostly noise?</span>
+ng.gradient_noise_scale(model, batches)
+
+<span class="c"># Can I average my fine-tunes into a soup?</span>
+soup = ng.model_soup([tune_a, tune_b])
+
+<span class="c"># Where do two prompts diverge inside my language model?</span>
+ng.prompt_divergence(hidden_a, hidden_b)[<span class="s">"divergence_layer"</span>]</code></pre>
+
+<h2 id="concepts"><span class="hash">#</span>Core concepts</h2>
+<table>
+<tr><th>Concept</th><th>What it is</th><th>Where</th></tr>
+<tr><td><code>Model</code></td><td>A network viewed as a point in parameter space: flat parameter vector, loss, gradient, and Hessian-vector product behind one interface.</td><td><a href="api.html#models">models</a></td></tr>
+<tr><td>Curve / Surface</td><td>The loss (or any scalar) sampled along a line or plane in parameter space.</td><td><a href="api.html#lossland">lossland</a>, <a href="api.html#surfaces">surfaces</a></td></tr>
+<tr><td>Spectrum</td><td>Top Hessian eigenvalues and eigenvectors: the local curvature of the loss.</td><td><a href="api.html#curvature">curvature</a></td></tr>
+<tr><td>Representation</td><td>Any (n_examples, dim) activation matrix, treated as a point cloud with structure.</td><td><a href="api.html#representations">representations</a>, <a href="api.html#manifolds">manifolds</a></td></tr>
+<tr><td><code>Trajectory</code></td><td>A sequence of checkpoints: training as a path through parameter space.</td><td><a href="api.html#trajectories">trajectories</a></td></tr>
+<tr><td>Direction</td><td>A probe vector: random, filter-normalized, gradient, eigenvector, or concept-based.</td><td><a href="api.html#probes">probes</a></td></tr>
+<tr><td>Hidden states</td><td>A (n_layers, n_tokens, dim) residual stream: the raw material of NLP geometry.</td><td><a href="nlp.html">nlp</a></td></tr>
+</table>
+
+<h2 id="design"><span class="hash">#</span>Design principles</h2>
+<ul>
+<li><strong>Geometry first.</strong> Models are points, checkpoints are trajectories, losses are surfaces, activations are manifolds.</li>
+<li><strong>Matrix-free.</strong> All curvature analysis needs only Hessian-vector products, never a full Hessian.</li>
+<li><strong>Reproducible.</strong> Every stochastic routine accepts a seed; results carry their settings as metadata.</li>
+<li><strong>Honest.</strong> Reports surface warnings and approximation limits, not only headline numbers.</li>
+<li><strong>Restorative.</strong> Every routine that moves a model through parameter space restores the original weights, even on error.</li>
+</ul>
+
+<footer>nngeom 0.2.0 &middot; MIT license &middot; <a href="api.html">API reference</a> &middot; <a href="nlp.html">NLP geometry</a> &middot; <a href="examples.html">Examples</a></footer>
+</main>
+</div>
+</body>
+</html>

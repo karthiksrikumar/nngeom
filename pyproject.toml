@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nngeom"
+version = "0.2.0"
+description = "Neural networks as geometric objects: loss landscapes, curvature, representation geometry, training trajectories, token geometry, and model comparison."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+  { name = "Srikumar", email = "srikumar@bu.edu" }
+]
+license = { text = "MIT" }
+keywords = [
+  "deep-learning", "geometry", "loss-landscape", "hessian", "curvature",
+  "cka", "representation-learning", "interpretability", "nlp",
+  "mode-connectivity", "intrinsic-dimension", "model-comparison",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Developers",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+  "numpy>=1.22",
+]
+
+[project.optional-dependencies]
+torch = ["torch>=2.0"]
+viz = ["matplotlib>=3.5"]
+all = ["torch>=2.0", "matplotlib>=3.5"]
+dev = ["pytest>=7.0", "matplotlib>=3.5", "build", "twine"]
+
+[project.urls]
+Homepage = "https://github.com/karthiksrikumar/nngeom"
+Documentation = "https://github.com/karthiksrikumar/nngeom/tree/main/docs"
+Issues = "https://github.com/karthiksrikumar/nngeom/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["nngeom*"]

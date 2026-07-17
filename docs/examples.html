@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nngeom examples</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+<nav class="side">
+  <a class="logo" href="index.html">nn<span>geom</span></a>
+  <div class="group">Start here</div>
+  <a href="index.html">Overview</a>
+  <a class="active" href="examples.html">Examples</a>
+  <div class="group">Reference</div>
+  <a href="api.html">API reference</a>
+  <a href="nlp.html">NLP geometry</a>
+  <div class="group">Scripts</div>
+  <a href="#quadratic">quadratic_demo</a>
+  <a href="#finetunes">compare_finetunes</a>
+  <a href="#dynamics">training_dynamics</a>
+  <a href="#reps">representation_geometry</a>
+  <a href="#nlp">nlp_geometry</a>
+  <a href="#torch">torch_example</a>
+</nav>
+<main>
+
+<h1>Examples</h1>
+<p>Every script lives in <code>examples/</code> and runs standalone. All but the last
+need only numpy, so you can explore the whole library before installing any deep
+learning framework.</p>
+<pre><code>python examples/quadratic_demo.py</code></pre>
+
+<h2 id="quadratic"><span class="hash">#</span>quadratic_demo.py</h2>
+<p><strong>The full tour on a model with known geometry.</strong> Builds a quadratic
+model whose Hessian is planted, so every measurement can be checked against ground
+truth: the spectrum estimate recovers the planted eigenvalues, the interpolation
+curve shows no barrier, and the automated report ties it all together. The best
+place to see the whole API in one file.</p>
+<pre><code>spec = ng.hessian_spectrum(model, batch, k=5)
+<span class="c"># top eigenvalue (true 20.0): 20.000</span>
+<span class="c"># trace estimate  (true 47.55): 48.06</span></code></pre>
+
+<h2 id="finetunes"><span class="hash">#</span>compare_finetunes.py</h2>
+<p><strong>Checkpoint comparison workflow.</strong> Simulates a base model and two
+fine-tunes, then answers the questions you actually ask after fine-tuning:</p>
+<ul>
+<li>What changed, layer by layer? (<code>compare_models</code>)</li>
+<li>Do the two fine-tunes push the model the same way? (<code>task_vector_alignment</code>)</li>
+<li>Are they in the same basin? (<code>loss_barrier_matrix</code>)</li>
+<li>Can I average them into a soup? (<code>model_soup</code>)</li>
+<li>If the straight path has a barrier, is there a curved valley? (<code>find_low_loss_path</code>)</li>
+</ul>
+
+<h2 id="dynamics"><span class="hash">#</span>training_dynamics.py</h2>
+<p><strong>Watch real gradient descent geometrically.</strong> Trains the same model
+with SGD at a safe learning rate and at one just under the stability limit, then
+compares the two runs: tortuosity, directional persistence, phase changes, gradient
+noise scale, SAM sharpness, and local linearity. The unstable run shows negative
+persistence (oscillation) and a wandering path; the stable run moves straight.</p>
+
+<h2 id="reps"><span class="hash">#</span>representation_geometry.py</h2>
+<p><strong>Representation health checks.</strong> Builds synthetic layer activations
+with known structure and shows how each tool exposes it: CKA vs SVCCA vs Procrustes
+on a rotated layer, linear probes, class manifold dimensions, collapse and uniformity
+on a planted rank-1 collapse, outlier hunting with a planted outlier, neuron matching
+across permuted "seeds", and a before/after drift report.</p>
+
+<h2 id="nlp"><span class="hash">#</span>nlp_geometry.py</h2>
+<p><strong>All ten NLP tools in one script.</strong> Uses synthetic hidden states
+shaped exactly like a real transformer's residual stream, with planted effects for
+each tool to find: a divergence layer for <code>prompt_divergence</code>, two sense
+clusters for <code>polysemy_score</code>, a repetition loop for the attractor score,
+and a topic shift for <code>token_novelty</code>. Swap in states from
+<code>output_hidden_states=True</code> and everything applies to your model.</p>
+
+<h2 id="torch"><span class="hash">#</span>torch_example.py</h2>
+<p><strong>The real thing.</strong> Requires <code>pip install nngeom[torch]</code>.
+Trains a small MLP on synthetic data, then runs exact autograd Hessian spectra,
+loss slices, activation extraction with forward hooks, layer CKA, trajectory
+analysis over training snapshots, and exports the full HTML geometry report.</p>
+<pre><code>acts = ng.extract_activations(net, X, layers=[<span class="s">"0"</span>, <span class="s">"2"</span>, <span class="s">"4"</span>])
+report = ng.analyze(model, batch, representations=acts, labels=y.numpy())
+report.to_html(<span class="s">"torch_geometry_report.html"</span>)</code></pre>
+
+<footer>nngeom 0.2.0 &middot; <a href="index.html">Overview</a> &middot; <a href="api.html">API reference</a> &middot; <a href="nlp.html">NLP geometry</a></footer>
+</main>
+</div>
+</body>
+</html>

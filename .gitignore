@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.env
+.venv
+*.egg
+.Python
+venv/
+.pytest_cache/
+.pypirc
+geometry_report.json
+*_geometry_report.html
+

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nngeom NLP geometry</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+<nav class="side">
+  <a class="logo" href="index.html">nn<span>geom</span></a>
+  <div class="group">Start here</div>
+  <a href="index.html">Overview</a>
+  <a href="examples.html">Examples</a>
+  <div class="group">Reference</div>
+  <a href="api.html">API reference</a>
+  <a class="active" href="nlp.html">NLP geometry</a>
+  <div class="group">The ten tools</div>
+  <a href="#token-trajectory">1. Token trajectory</a>
+  <a href="#contextualization">2. Contextualization</a>
+  <a href="#prompt-divergence">3. Prompt divergence</a>
+  <a href="#sentence-curvature">4. Sentence curvature</a>
+  <a href="#polysemy">5. Polysemy score</a>
+  <a href="#layer-transition">6. Layer transition</a>
+  <a href="#isotropy">7. Isotropy correction</a>
+  <a href="#semantic-axis">8. Semantic axes</a>
+  <a href="#repetition">9. Repetition attractor</a>
+  <a href="#novelty">10. Token novelty</a>
+</nav>
+<main>
+
+<h1>NLP geometry</h1>
+<p>Ten tools that treat a language model's hidden states as geometric objects:
+tokens travel through layers, prompts trace paths, senses form clusters, and
+degeneration orbits attractors. All of them take plain numpy arrays, so they work
+with hidden states extracted from any transformer.</p>
+
+<div class="note"><b>Getting hidden states.</b> With HuggingFace:
+<code>out = model(**inputs, output_hidden_states=True)</code> gives a tuple of layers;
+stack one sequence into an array of shape <code>(n_layers, n_tokens, dim)</code> and
+everything below applies unchanged. The same shapes come out of torch hooks or JAX models.</div>
+
+<h2 id="token-trajectory"><span class="hash">1</span>Token trajectory</h2>
+<p><code>ng.token_trajectory(hidden_states, token_index)</code></p>
+<p>Follows one token through every layer of the residual stream and measures the
+path it traces: total length, straightness (tortuosity), turning angles, and the
+layer where the biggest transformation happens. Tokens the model works hard to
+resolve (rare words, ambiguous references) travel farther and turn more; function
+words barely move. Comparing trajectories across tokens gives a per-token map of
+where the model spends its representational effort.</p>
+<pre><code>traj = ng.token_trajectory(hidden, token_index=5)
+traj[<span class="s">"path_length"</span>], traj[<span class="s">"busiest_layer"</span>], traj[<span class="s">"tortuosity"</span>]</code></pre>
+
+<h2 id="contextualization"><span class="hash">2</span>Contextualization score</h2>
+<p><code>ng.contextualization_score(static_embedding, contexts)</code></p>
+<p>Quantifies how much context reshapes a token. Collect the same token's vector
+from many different sentences and compare against its static (layer-0) embedding:
+the mean shift says how contextual the token is, and the self-similarity across
+contexts says how consistently the model treats it. Low self-similarity flags tokens
+whose meaning the model resolves very differently per sentence.</p>
+
+<h2 id="prompt-divergence"><span class="hash">3</span>Prompt divergence</h2>
+<p><code>ng.prompt_divergence(hidden_a, hidden_b)</code></p>
+<p>Finds the depth at which the model starts treating two prompts differently.
+Feed the hidden states of two related prompts (a question phrased two ways, with
+and without a system instruction, benign vs adversarial phrasing) and get the
+per-layer distance between their final-token states plus the first layer of
+meaningful divergence. Shallow divergence means surface wording changed the
+computation early; late divergence means the model processed them identically
+until the end. A practical lens on prompt sensitivity and jailbreak analysis.</p>
+<pre><code>div = ng.prompt_divergence(hidden_a, hidden_b)
+div[<span class="s">"divergence_layer"</span>], div[<span class="s">"per_layer_relative"</span>]</code></pre>
+
+<h2 id="sentence-curvature"><span class="hash">4</span>Sentence curvature</h2>
+<p><code>ng.sentence_curvature(embeddings)</code></p>
+<p>Treats a sentence as a curve: token embeddings visited in order within one layer.
+Reports mean and max turning angle, tortuosity, and step sizes. Coherent prose forms
+smoother paths; syntactically chaotic, code-switched, or adversarial inputs turn
+sharply. Useful as a cheap, model-internal fluency and anomaly signal.</p>
+
+<h2 id="polysemy"><span class="hash">5</span>Polysemy score</h2>
+<p><code>ng.polysemy_score(contexts, max_senses)</code></p>
+<p>Estimates how many distinct senses a token exhibits, purely from geometry.
+Clusters the token's contextual embeddings across many sentences and picks the
+sense count by the elbow of within-cluster dispersion. Word sense induction with
+no lexicon, no labels, and no extra model: "bank" shows two tight clusters,
+"the" shows one.</p>
+<pre><code>senses = ng.polysemy_score(contextual_vectors_of_bank)
+senses[<span class="s">"n_senses"</span>], senses[<span class="s">"assignments"</span>]</code></pre>
+
+<h2 id="layer-transition"><span class="hash">6</span>Layer transition profile</h2>
+<p><code>ng.layer_transition_profile(hidden_states)</code></p>
+<p>Computes CKA of every layer against the embedding layer (input-likeness) and
+against the final layer (output-likeness). The crossing point is the network's
+processing waist: the depth where it stops encoding the input and starts building
+the output. Comparing transition layers across models, sizes, or fine-tunes shows
+where the division of labor moved.</p>
+
+<h2 id="isotropy"><span class="hash">7</span>Isotropy correction</h2>
+<p><code>ng.isotropy_correction(embeddings, n_components)</code></p>
+<p>Transformer embeddings are notoriously anisotropic: everything points into a
+narrow cone, which wrecks cosine similarity. This implements all-but-the-top
+(mean removal plus top principal component removal) and reports anisotropy before
+and after, so you can measure exactly how much usable geometry the correction
+unlocks before feeding embeddings into retrieval or clustering.</p>
+
+<h2 id="semantic-axis"><span class="hash">8</span>Semantic axes and projection</h2>
+<p><code>ng.semantic_axis(positive, negative)</code> and <code>ng.semantic_projection(embeddings, axis)</code></p>
+<p>Build a direction from a contrast set (formal vs casual sentences, positive vs
+negative reviews, toxic vs benign) and score any embedding along it. The scores are
+signed projections, so both ordering and magnitude are meaningful. This is the
+geometric skeleton of steering vectors and bias probes, in two lines.</p>
+<pre><code>axis = ng.semantic_axis(formal_embs, casual_embs)
+formality_scores = ng.semantic_projection(sentence_embs, axis)</code></pre>
+
+<h2 id="repetition"><span class="hash">9</span>Repetition attractor score</h2>
+<p><code>ng.repetition_attractor_score(embeddings)</code></p>
+<p>Detects degeneration by its geometric signature: a generation stuck in a loop
+revisits the same region of representation space. Measures the recurrence rate of
+well-separated token pairs whose states are unusually close. Healthy text keeps
+exploring; looping text orbits an attractor. Works on the hidden states themselves,
+so it can flag degeneration before it is obvious in the surface text.</p>
+
+<h2 id="novelty"><span class="hash">10</span>Token novelty</h2>
+<p><code>ng.token_novelty(embeddings, window)</code></p>
+<p>Per-token geometric surprise: the residual of projecting each token's embedding
+onto the subspace spanned by everything said so far. High-novelty tokens introduce
+genuinely new directions: topic shifts, new entities, or hallucination onsets.
+A sliding <code>window</code> restricts the memory to recent context.</p>
+<pre><code>novelty = ng.token_novelty(last_layer_states)
+suspicious = novelty &gt; novelty.mean() + 2 * novelty.std()</code></pre>
+
+<h2><span class="hash">+</span>One-call profile</h2>
+<p><code>ng.nlp_summary(hidden_states)</code> runs the transition profile, anisotropy,
+sentence curvature, repetition, and novelty in one call and returns a single dict,
+handy for logging a geometric health check per generation.</p>
+
+<footer>nngeom 0.2.0 &middot; <a href="index.html">Overview</a> &middot; <a href="api.html">API reference</a> &middot; <a href="examples.html">Examples</a></footer>
+</main>
+</div>
+</body>
+</html>
