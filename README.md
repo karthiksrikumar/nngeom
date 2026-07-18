@@ -1,5 +1,10 @@
 # nngeom
 
+[![PyPI version](https://img.shields.io/pypi/v/nngeom.svg?color=1e90ff)](https://pypi.org/project/nngeom/)
+[![Python versions](https://img.shields.io/pypi/pyversions/nngeom.svg?color=1e90ff)](https://pypi.org/project/nngeom/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-1e90ff.svg)](LICENSE)
+[![Tests](https://img.shields.io/badge/tests-92%20passing-1e90ff.svg)](tests/)
+
 **Neural networks as geometric objects.**
 
 `nngeom` is a Python library for measuring, visualizing, and reasoning about the geometry of neural networks: loss landscapes, curvature, representation structure, training trajectories, token geometry for language models, and model comparison. It treats a trained model not just as a function, but as a point (and a path) in a high-dimensional space with a shape you can inspect.
