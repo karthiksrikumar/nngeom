@@ -3,75 +3,118 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>nngeom : neural networks as geometric objects</title>
+<title>nngeom : a field guide to model geometry</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="wrap">
-<nav class="side">
-  <a class="logo" href="index.html">nn<span>geom</span></a>
-  <div class="group">Start here</div>
-  <a class="active" href="index.html">Overview</a>
-  <a href="index.html#install">Installation</a>
-  <a href="index.html#quickstart">Quickstart</a>
-  <a href="index.html#concepts">Core concepts</a>
-  <div class="group">Reference</div>
-  <a href="api.html">API reference</a>
-  <a href="nlp.html">NLP geometry</a>
-  <a href="examples.html">Examples</a>
+<nav class="index-nav">
+  <a class="mark" href="index.html">nn<em>geom</em></a>
+  <span class="kicker">field guide, v0.2</span>
+
+  <div class="tab">Start here</div>
+  <a class="entry current" href="index.html">Overview</a>
+  <a class="entry" href="index.html#install">Installation</a>
+  <a class="entry" href="index.html#quickstart">Quickstart</a>
+  <a class="entry" href="index.html#concepts">Core concepts</a>
+
+  <div class="tab">Reference</div>
+  <a class="entry" href="api.html">API reference</a>
+  <a class="entry" href="nlp.html">NLP geometry</a>
+  <a class="entry" href="examples.html">Examples</a>
 </nav>
 <main>
 
-<div class="hero">
-  <h1>nn<span>geom</span></h1>
-  <p>Measure, visualize, and reason about the geometry of neural networks:
-     loss landscapes, curvature, representation structure, training trajectories,
-     token geometry, and model comparison. A trained model is not just a function.
-     It is a shape, and nngeom lets you inspect it.</p>
+<div class="masthead">
+  <svg class="contour" viewBox="0 0 420 460" aria-hidden="true">
+    <g transform="translate(230,220)">
+      <path class="ring" opacity="0.35" transform="scale(1.55)" d="M0,-100 C55,-98 95,-60 98,-5 C101,50 65,95 10,100 C-45,105 -95,70 -100,15 C-105,-40 -75,-90 -20,-99 C-12,-100 -6,-100 0,-100 Z"/>
+      <path class="ring" opacity="0.5" transform="scale(1.12)" d="M0,-100 C55,-98 95,-60 98,-5 C101,50 65,95 10,100 C-45,105 -95,70 -100,15 C-105,-40 -75,-90 -20,-99 C-12,-100 -6,-100 0,-100 Z"/>
+      <path class="ring" opacity="0.7" transform="scale(0.72)" d="M0,-100 C55,-98 95,-60 98,-5 C101,50 65,95 10,100 C-45,105 -95,70 -100,15 C-105,-40 -75,-90 -20,-99 C-12,-100 -6,-100 0,-100 Z"/>
+      <path class="ring accented" transform="scale(0.4)" d="M0,-100 C55,-98 95,-60 98,-5 C101,50 65,95 10,100 C-45,105 -95,70 -100,15 C-105,-40 -75,-90 -20,-99 C-12,-100 -6,-100 0,-100 Z"/>
+      <path class="mark-x" d="M-7,-7 L7,7 M-7,7 L7,-7"/>
+    </g>
+  </svg>
+  <span class="kicker">Neural network geometry &middot; numpy core</span>
+  <h1>A field guide to<br>model <em>geometry</em></h1>
+  <p class="lede">nngeom measures, visualizes, and reasons about the shape of neural networks:
+  loss landscapes, curvature, representation structure, training trajectories, and token
+  geometry for language models. A trained model is not only a function. It is a surface
+  with basins and ridges, a cloud of points with a manifold, a path through a space with
+  a shape you can survey.</p>
   <div class="actions">
-    <a class="primary" href="index.html#quickstart">Get started</a>
+    <a class="primary" href="index.html#quickstart">Read the quickstart</a>
     <a class="ghost" href="api.html">API reference</a>
     <a class="ghost" href="nlp.html">NLP geometry</a>
   </div>
 </div>
 
-<div class="pill-row">
-  <span class="pill"><b>70+</b> analysis functions</span>
-  <span class="pill"><b>numpy</b> core, zero framework lock-in</span>
-  <span class="pill"><b>PyTorch</b> adapter with exact autograd HVPs</span>
-  <span class="pill"><b>92</b> passing tests against known geometry</span>
-  <span class="pill"><b>MIT</b> licensed</span>
+<div class="readout">
+  <div class="cell"><span class="num"><span>70+</span></span><span class="label">analysis functions</span></div>
+  <div class="cell"><span class="num">numpy</span><span class="label">core, zero lock-in</span></div>
+  <div class="cell"><span class="num">torch</span><span class="label">exact autograd HVPs</span></div>
+  <div class="cell"><span class="num"><span>92</span></span><span class="label">tests vs. known geometry</span></div>
+  <div class="cell"><span class="num">MIT</span><span class="label">license</span></div>
 </div>
 
-<h2 id="why"><span class="hash">#</span>Why nngeom</h2>
-<p>Deep learning is full of geometric language: "the model found a flat minimum",
-"the representations collapsed", "the fine-tune drifted". nngeom turns those metaphors
-into <strong>measurements</strong>. Every analysis returns numbers you can compare, log,
-and test, and the automated report flags suspicious geometry (saddle points, collapse,
-oscillating optimizers) instead of only drawing pretty plots.</p>
+<h2 id="why">Why nngeom</h2>
+<p>Deep learning is full of geometric language: the model found a flat minimum, the
+representations collapsed, the fine-tune drifted. nngeom turns those metaphors into
+<strong>measurements</strong>. Every analysis returns numbers you can compare, log, and
+test, and the automated report flags suspicious geometry (saddle points, collapse,
+oscillating optimizers) instead of only drawing plots.</p>
 
-<div class="grid">
-  <div class="card"><span class="tag">lossland</span><h3><a href="api.html#lossland">Loss landscapes</a></h3>
-    <p>Interpolation curves, barrier heights, 2D slices, sharpness, basin width, curved low-loss paths between models.</p></div>
-  <div class="card"><span class="tag">curvature</span><h3><a href="api.html#curvature">Curvature</a></h3>
-    <p>Hessian spectra via Lanczos and power iteration, Hutchinson trace, per-layer curvature. Matrix-free, so it scales.</p></div>
-  <div class="card"><span class="tag">representations</span><h3><a href="api.html#representations">Representations</a></h3>
-    <p>CKA, SVCCA, Procrustes, linear probes, collapse and anisotropy detection, neuron matching, drift reports.</p></div>
-  <div class="card"><span class="tag">manifolds</span><h3><a href="api.html#manifolds">Manifolds</a></h3>
-    <p>Intrinsic dimension (TwoNN), effective rank, kNN graphs, outlier scores, random projections.</p></div>
-  <div class="card"><span class="tag">trajectories</span><h3><a href="api.html#trajectories">Trajectories</a></h3>
-    <p>Path length, tortuosity, directional persistence, phase-change detection, layerwise drift over training.</p></div>
-  <div class="card"><span class="tag">dynamics</span><h3><a href="api.html#dynamics">Optimization dynamics</a></h3>
-    <p>Gradient noise scale, batch gradient alignment, empirical Fisher, SAM sharpness, local linearity.</p></div>
-  <div class="card"><span class="tag">compare</span><h3><a href="api.html#compare">Model comparison</a></h3>
-    <p>Per-layer drift, task vectors and their alignment, model soups, Hessian eigenspace overlap.</p></div>
-  <div class="card"><span class="tag">nlp</span><h3><a href="nlp.html">NLP geometry</a></h3>
-    <p>Ten token-geometry tools: token trajectories, prompt divergence, polysemy, repetition attractors, novelty.</p></div>
-  <div class="card"><span class="tag">report</span><h3><a href="api.html#report">Automated report</a></h3>
-    <p>One call profiles a model, warns about bad geometry, and exports a shareable HTML report with figures.</p></div>
+<h2 id="modules">Field index</h2>
+<p>Nine survey instruments, each pointed at a different part of a model's shape.</p>
+<div class="specimen-list">
+  <a class="specimen" href="api.html#lossland">
+    <span class="glyph"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 22 C8 22 9 10 15 10 C21 10 22 24 28 24"/><circle cx="15" cy="10" r="1.6" fill="currentColor" stroke="none"/></svg></span>
+    <span class="code">lossland</span>
+    <span class="desc"><strong>Loss landscapes.</strong> Interpolation barriers, 2D slices, sharpness, basin width, curved low-loss paths between models.</span>
+  </a>
+  <a class="specimen" href="api.html#curvature">
+    <span class="glyph"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 26 V16 M12 26 V10 M19 26 V18 M26 26 V6"/></svg></span>
+    <span class="code">curvature</span>
+    <span class="desc"><strong>Curvature.</strong> Hessian spectra via Lanczos and power iteration, Hutchinson trace, per-layer curvature. Matrix-free, so it scales.</span>
+  </a>
+  <a class="specimen" href="api.html#representations">
+    <span class="glyph"><svg viewBox="0 0 32 32" fill="currentColor" stroke="none"><circle cx="8" cy="10" r="2"/><circle cx="14" cy="8" r="2"/><circle cx="11" cy="15" r="2"/><circle cx="22" cy="20" r="2"/><circle cx="27" cy="16" r="2"/><circle cx="24" cy="25" r="2"/></svg></span>
+    <span class="code">representations</span>
+    <span class="desc"><strong>Representations.</strong> CKA, SVCCA, Procrustes, linear probes, collapse and anisotropy detection, neuron matching, drift reports.</span>
+  </a>
+  <a class="specimen" href="api.html#manifolds">
+    <span class="glyph"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="16" cy="16" rx="13" ry="7"/><ellipse cx="16" cy="16" rx="6.5" ry="3.5"/></svg></span>
+    <span class="code">manifolds</span>
+    <span class="desc"><strong>Manifolds.</strong> Intrinsic dimension (TwoNN), effective rank, kNN graphs, outlier scores, random projections.</span>
+  </a>
+  <a class="specimen" href="api.html#trajectories">
+    <span class="glyph"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="0.2 4.2"><path d="M4 26 C10 20 12 10 28 5"/></svg></span>
+    <span class="code">trajectories</span>
+    <span class="desc"><strong>Trajectories.</strong> Path length, tortuosity, directional persistence, phase-change detection, layerwise drift over training.</span>
+  </a>
+  <a class="specimen" href="api.html#dynamics">
+    <span class="glyph"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M2 18 L8 12 L12 20 L16 8 L20 22 L24 14 L30 16"/></svg></span>
+    <span class="code">dynamics</span>
+    <span class="desc"><strong>Optimization dynamics.</strong> Gradient noise scale, batch gradient alignment, empirical Fisher, SAM sharpness, local linearity.</span>
+  </a>
+  <a class="specimen" href="api.html#compare">
+    <span class="glyph"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="13" cy="16" r="9"/><circle cx="21" cy="16" r="9"/></svg></span>
+    <span class="code">compare</span>
+    <span class="desc"><strong>Model comparison.</strong> Per-layer drift, task vectors and their alignment, model soups, Hessian eigenspace overlap.</span>
+  </a>
+  <a class="specimen" href="nlp.html">
+    <span class="glyph"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="5" cy="16" r="2" fill="currentColor" stroke="none"/><circle cx="14" cy="16" r="2" fill="currentColor" stroke="none"/><circle cx="23" cy="16" r="2" fill="currentColor" stroke="none"/><path d="M7 16 H12 M16 16 H21"/></svg></span>
+    <span class="code">nlp</span>
+    <span class="desc"><strong>NLP geometry.</strong> Ten token-geometry tools: token trajectories, prompt divergence, polysemy, repetition attractors, novelty.</span>
+  </a>
+  <a class="specimen" href="api.html#report">
+    <span class="glyph"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="6" y="4" width="20" height="24" rx="1"/><path d="M11 11 H21 M11 16 H21 M11 21 H17"/></svg></span>
+    <span class="code">report</span>
+    <span class="desc"><strong>Automated report.</strong> One call profiles a model, warns about bad geometry, and exports a shareable HTML report with figures.</span>
+  </a>
 </div>
 
-<h2 id="install"><span class="hash">#</span>Installation</h2>
+<h2 id="install">Installation</h2>
 <pre><code>pip install nngeom            <span class="c"># core, numpy only</span>
 pip install nngeom[torch]     <span class="c"># + PyTorch adapter (autograd HVPs, hooks)</span>
 pip install nngeom[viz]       <span class="c"># + matplotlib plotting</span>
@@ -81,7 +124,7 @@ Every analysis works on plain parameter dictionaries via <code>Model.from_functi
 and all representation and NLP tools take ordinary numpy arrays, so hidden states from
 PyTorch, JAX, or TensorFlow models all work the same way.</div>
 
-<h2 id="quickstart"><span class="hash">#</span>Quickstart</h2>
+<h2 id="quickstart">Quickstart</h2>
 <pre><code><span class="k">import</span> nngeom <span class="k">as</span> ng
 
 <span class="c"># wrap a PyTorch model with a loss closure</span>
@@ -111,7 +154,8 @@ soup = ng.model_soup([tune_a, tune_b])
 <span class="c"># Where do two prompts diverge inside my language model?</span>
 ng.prompt_divergence(hidden_a, hidden_b)[<span class="s">"divergence_layer"</span>]</code></pre>
 
-<h2 id="concepts"><span class="hash">#</span>Core concepts</h2>
+<h2 id="concepts">Core concepts</h2>
+<div class="tablewrap">
 <table>
 <tr><th>Concept</th><th>What it is</th><th>Where</th></tr>
 <tr><td><code>Model</code></td><td>A network viewed as a point in parameter space: flat parameter vector, loss, gradient, and Hessian-vector product behind one interface.</td><td><a href="api.html#models">models</a></td></tr>
@@ -122,8 +166,9 @@ ng.prompt_divergence(hidden_a, hidden_b)[<span class="s">"divergence_layer"</spa
 <tr><td>Direction</td><td>A probe vector: random, filter-normalized, gradient, eigenvector, or concept-based.</td><td><a href="api.html#probes">probes</a></td></tr>
 <tr><td>Hidden states</td><td>A (n_layers, n_tokens, dim) residual stream: the raw material of NLP geometry.</td><td><a href="nlp.html">nlp</a></td></tr>
 </table>
+</div>
 
-<h2 id="design"><span class="hash">#</span>Design principles</h2>
+<h2 id="design">Design principles</h2>
 <ul>
 <li><strong>Geometry first.</strong> Models are points, checkpoints are trajectories, losses are surfaces, activations are manifolds.</li>
 <li><strong>Matrix-free.</strong> All curvature analysis needs only Hessian-vector products, never a full Hessian.</li>
@@ -132,7 +177,15 @@ ng.prompt_divergence(hidden_a, hidden_b)[<span class="s">"divergence_layer"</spa
 <li><strong>Restorative.</strong> Every routine that moves a model through parameter space restores the original weights, even on error.</li>
 </ul>
 
-<footer>nngeom 0.2.0 &middot; MIT license &middot; <a href="api.html">API reference</a> &middot; <a href="nlp.html">NLP geometry</a> &middot; <a href="examples.html">Examples</a></footer>
+<div class="colophon">
+  <span>nngeom v0.2 &middot; set in STIX Two Text &amp; IBM Plex</span>
+  <span class="links">
+    <a href="api.html">API reference</a>
+    <a href="nlp.html">NLP geometry</a>
+    <a href="examples.html">Examples</a>
+    <a href="https://pypi.org/project/nngeom/">PyPI</a>
+  </span>
+</div>
 </main>
 </div>
 </body>

@@ -8,42 +8,57 @@
 </head>
 <body>
 <div class="wrap">
-<nav class="side">
-  <a class="logo" href="index.html">nn<span>geom</span></a>
-  <div class="group">Start here</div>
-  <a href="index.html">Overview</a>
-  <a href="examples.html">Examples</a>
-  <div class="group">Reference</div>
-  <a class="active" href="api.html">API reference</a>
-  <a href="api.html#models">models</a>
-  <a href="api.html#lossland">lossland</a>
-  <a href="api.html#curvature">curvature</a>
-  <a href="api.html#representations">representations</a>
-  <a href="api.html#manifolds">manifolds</a>
-  <a href="api.html#trajectories">trajectories</a>
-  <a href="api.html#dynamics">dynamics</a>
-  <a href="api.html#compare">compare</a>
-  <a href="api.html#probes">probes</a>
-  <a href="api.html#metrics">metrics</a>
-  <a href="api.html#data">data</a>
-  <a href="api.html#surfaces">surfaces</a>
-  <a href="api.html#visualize">visualize</a>
-  <a href="api.html#export">export</a>
-  <a href="api.html#report">report</a>
-  <div class="group">Special topics</div>
-  <a href="nlp.html">NLP geometry</a>
+<nav class="index-nav">
+  <a class="mark" href="index.html">nn<em>geom</em></a>
+  <span class="kicker">field guide, v0.2</span>
+
+  <div class="tab">Start here</div>
+  <a class="entry" href="index.html">Overview</a>
+  <a class="entry" href="examples.html">Examples</a>
+
+  <div class="tab">Reference</div>
+  <a class="entry current" href="api.html">API reference</a>
+  <a class="entry" href="api.html#models">models</a>
+  <a class="entry" href="api.html#lossland">lossland</a>
+  <a class="entry" href="api.html#curvature">curvature</a>
+  <a class="entry" href="api.html#representations">representations</a>
+  <a class="entry" href="api.html#manifolds">manifolds</a>
+  <a class="entry" href="api.html#trajectories">trajectories</a>
+  <a class="entry" href="api.html#dynamics">dynamics</a>
+  <a class="entry" href="api.html#compare">compare</a>
+  <a class="entry" href="api.html#probes">probes</a>
+  <a class="entry" href="api.html#metrics">metrics</a>
+  <a class="entry" href="api.html#data">data</a>
+  <a class="entry" href="api.html#surfaces">surfaces</a>
+  <a class="entry" href="api.html#visualize">visualize</a>
+  <a class="entry" href="api.html#export">export</a>
+  <a class="entry" href="api.html#report">report</a>
+
+  <div class="tab">Special topics</div>
+  <a class="entry" href="nlp.html">NLP geometry</a>
 </nav>
 <main>
 
-<h1>API reference</h1>
-<p>Everything below is importable from the top level: <code>import nngeom as ng</code>.
-Functions that move a model through parameter space always restore the original
-weights, and every stochastic routine accepts a <code>seed</code>.</p>
+<div class="masthead compact">
+  <svg class="contour" viewBox="0 0 420 460" aria-hidden="true">
+    <g transform="translate(230,220)">
+      <path class="ring" opacity="0.35" transform="scale(1.55)" d="M0,-100 C55,-98 95,-60 98,-5 C101,50 65,95 10,100 C-45,105 -95,70 -100,15 C-105,-40 -75,-90 -20,-99 C-12,-100 -6,-100 0,-100 Z"/>
+      <path class="ring" opacity="0.5" transform="scale(1.12)" d="M0,-100 C55,-98 95,-60 98,-5 C101,50 65,95 10,100 C-45,105 -95,70 -100,15 C-105,-40 -75,-90 -20,-99 C-12,-100 -6,-100 0,-100 Z"/>
+      <path class="ring" opacity="0.7" transform="scale(0.72)" d="M0,-100 C55,-98 95,-60 98,-5 C101,50 65,95 10,100 C-45,105 -95,70 -100,15 C-105,-40 -75,-90 -20,-99 C-12,-100 -6,-100 0,-100 Z"/>
+      <path class="ring accented" transform="scale(0.4)" d="M0,-100 C55,-98 95,-60 98,-5 C101,50 65,95 10,100 C-45,105 -95,70 -100,15 C-105,-40 -75,-90 -20,-99 C-12,-100 -6,-100 0,-100 Z"/>
+    </g>
+  </svg>
+  <span class="kicker">Reference</span>
+  <h1>API reference</h1>
+  <p class="lede">Everything below is importable from the top level: <code>import nngeom as ng</code>.
+  Functions that move a model through parameter space always restore the original weights,
+  and every stochastic routine accepts a <code>seed</code>.</p>
+</div>
 
-<h2 id="models"><span class="hash">#</span>models</h2>
+<h2 id="models">models</h2>
 <p>The <code>Model</code> class gives every framework the same geometric interface:
 a flat parameter vector, a scalar loss field, its gradient, and a Hessian-vector product.</p>
-<table>
+<div class="tablewrap"><table>
 <tr><th>Member</th><th>Description</th></tr>
 <tr><td><code>Model(obj, loss_fn, name)</code></td><td>Wrap a <code>torch.nn.Module</code> (with <code>loss_fn(module, batch)</code>) or a dict of numpy arrays (with <code>loss_fn(params, batch)</code>).</td></tr>
 <tr><td><code>Model.from_function(params, loss_fn, grad_fn=None)</code></td><td>Framework-free model from numpy parameters. Without <code>grad_fn</code>, gradients use central finite differences.</td></tr>
@@ -53,10 +68,10 @@ a flat parameter vector, a scalar loss field, its gradient, and a Hessian-vector
 <tr><td><code>layer_names() / layer_shapes() / layer_norms()</code></td><td>Named parameter blocks and their L2 norms.</td></tr>
 <tr><td><code>spectral_norms()</code></td><td>Largest singular value of each weight matrix. Their product bounds the Lipschitz constant; spikes flag amplifying layers.</td></tr>
 <tr><td><code>stable_ranks()</code></td><td>Stable rank per weight matrix: how many directions each layer really uses.</td></tr>
-</table>
+</table></div>
 
-<h2 id="lossland"><span class="hash">#</span>lossland</h2>
-<table>
+<h2 id="lossland">lossland</h2>
+<div class="tablewrap"><table>
 <tr><th>Function</th><th>Description</th></tr>
 <tr><td><code>linear_interpolation(a, b, batch, steps, extend)</code></td><td>Loss along the straight line between two models. <code>.barrier_height()</code> on the result tests linear mode connectivity.</td></tr>
 <tr><td><code>random_slice_1d(model, batch, span, steps, seed, normalize)</code></td><td>Loss along a filter-normalized random direction through the current weights.</td></tr>
@@ -67,12 +82,12 @@ a flat parameter vector, a scalar loss field, its gradient, and a Hessian-vector
 <tr><td><code>loss_barrier_matrix(models, batch, steps)</code></td><td>Pairwise barrier heights between many checkpoints. Near-zero entries share a basin.</td></tr>
 <tr><td><code>bezier_path(a, b, control, batch, steps)</code></td><td>Loss along a quadratic Bezier path through a chosen control point.</td></tr>
 <tr><td><code>find_low_loss_path(a, b, batch, steps, iters, seed)</code></td><td>Searches for a curved low-loss path between two models (mode connectivity). Reports straight vs curved barrier and a <code>connected</code> verdict.</td></tr>
-</table>
+</table></div>
 
-<h2 id="curvature"><span class="hash">#</span>curvature</h2>
+<h2 id="curvature">curvature</h2>
 <div class="note"><b>Matrix-free.</b> Everything here needs only <code>model.hvp</code>,
 so it works on models where the full Hessian could never be materialized.</div>
-<table>
+<div class="tablewrap"><table>
 <tr><th>Function</th><th>Description</th></tr>
 <tr><td><code>hessian_spectrum(model, batch, k, method, trace, seed)</code></td><td>One-call curvature summary: top eigenvalues plus a trace estimate. <code>method</code> is <code>"lanczos"</code> or <code>"power"</code>.</td></tr>
 <tr><td><code>lanczos_spectrum(model, batch, m, seed)</code></td><td>Lanczos tridiagonalization with full reorthogonalization; approximates the extreme eigenvalues.</td></tr>
@@ -81,11 +96,11 @@ so it works on models where the full Hessian could never be materialized.</div>
 <tr><td><code>curvature_along(model, batch, direction)</code></td><td>Second directional derivative along any chosen direction.</td></tr>
 <tr><td><code>layerwise_curvature(model, batch, n_samples, seed)</code></td><td>Trace estimate restricted to each layer block: which layers carry the curvature.</td></tr>
 <tr><td><code>Spectrum</code></td><td>Result object: <code>top_eigenvalue</code>, <code>condition_ratio()</code>, <code>negative_fraction()</code> (saddle signal), <code>plot()</code>.</td></tr>
-</table>
+</table></div>
 
-<h2 id="representations"><span class="hash">#</span>representations</h2>
+<h2 id="representations">representations</h2>
 <p>All metrics take plain (n_examples, dim) numpy matrices, so they work with any framework.</p>
-<table>
+<div class="tablewrap"><table>
 <tr><th>Function</th><th>Description</th></tr>
 <tr><td><code>extract_activations(module, inputs, layers, flatten)</code></td><td>Capture activations from named submodules of a torch model via forward hooks.</td></tr>
 <tr><td><code>linear_cka(X, Y) / rbf_cka(X, Y)</code></td><td>Centered Kernel Alignment: rotation- and scale-invariant similarity between two representations of the same examples.</td></tr>
@@ -101,10 +116,10 @@ so it works on models where the full Hessian could never be materialized.</div>
 <tr><td><code>collapse_score(X)</code></td><td>In [0, 1]: 1 means everything mapped to nearly one direction.</td></tr>
 <tr><td><code>class_geometry(X, labels)</code></td><td>Centroids, per-class radius, within/between scatter, separation ratio.</td></tr>
 <tr><td><code>representation_summary(X, labels)</code></td><td>One-call profile combining the metrics above.</td></tr>
-</table>
+</table></div>
 
-<h2 id="manifolds"><span class="hash">#</span>manifolds</h2>
-<table>
+<h2 id="manifolds">manifolds</h2>
+<div class="tablewrap"><table>
 <tr><th>Function</th><th>Description</th></tr>
 <tr><td><code>pca(X, k)</code></td><td>SVD-based PCA: projections, components, explained variance ratio.</td></tr>
 <tr><td><code>effective_rank(X)</code></td><td>Entropy-based effective rank of the covariance.</td></tr>
@@ -117,10 +132,10 @@ so it works on models where the full Hessian could never be materialized.</div>
 <tr><td><code>outlier_scores(X, k)</code></td><td>z-scored kNN distance per point: geometric outliers are often mislabeled or shifted inputs.</td></tr>
 <tr><td><code>class_manifold_dimensions(X, labels)</code></td><td>TwoNN dimension of each class's own manifold.</td></tr>
 <tr><td><code>manifold_summary(X, k)</code></td><td>One-call structural profile.</td></tr>
-</table>
+</table></div>
 
-<h2 id="trajectories"><span class="hash">#</span>trajectories</h2>
-<table>
+<h2 id="trajectories">trajectories</h2>
+<div class="tablewrap"><table>
 <tr><th>Member</th><th>Description</th></tr>
 <tr><td><code>Trajectory.from_models(models) / from_vectors(vectors)</code></td><td>Build a path from checkpoints or raw flat vectors.</td></tr>
 <tr><td><code>path_length() / net_displacement() / tortuosity()</code></td><td>Distance traveled, start-to-end distance, and their ratio (1 means straight).</td></tr>
@@ -130,10 +145,10 @@ so it works on models where the full Hessian could never be materialized.</div>
 <tr><td><code>layerwise_drift()</code></td><td>Per-layer distance from the first checkpoint over time.</td></tr>
 <tr><td><code>pca_projection(k) / plot()</code></td><td>Project the path into its principal plane for visualization.</td></tr>
 <tr><td><code>loss_along_trajectory(models, batch)</code></td><td>Loss at each checkpoint.</td></tr>
-</table>
+</table></div>
 
-<h2 id="dynamics"><span class="hash">#</span>dynamics</h2>
-<table>
+<h2 id="dynamics">dynamics</h2>
+<div class="tablewrap"><table>
 <tr><th>Function</th><th>Description</th></tr>
 <tr><td><code>gradient_alignment(model, batches)</code></td><td>Mean pairwise cosine between batch gradients: signal vs conflict.</td></tr>
 <tr><td><code>gradient_noise_scale(model, batches)</code></td><td>tr(Cov(g)) / ||E[g]||&sup2;: large values suggest a bigger batch size would help.</td></tr>
@@ -141,10 +156,10 @@ so it works on models where the full Hessian could never be materialized.</div>
 <tr><td><code>fisher_layer_importance(model, batches)</code></td><td>Fisher mass per layer.</td></tr>
 <tr><td><code>sam_sharpness(model, batch, rho)</code></td><td>SAM-style worst-case loss rise after one ascent step along the gradient.</td></tr>
 <tr><td><code>local_linearity(model, batch, radius, n_samples, seed)</code></td><td>How well a first-order model predicts nearby losses: trust-region quality.</td></tr>
-</table>
+</table></div>
 
-<h2 id="compare"><span class="hash">#</span>compare</h2>
-<table>
+<h2 id="compare">compare</h2>
+<div class="tablewrap"><table>
 <tr><th>Function</th><th>Description</th></tr>
 <tr><td><code>compare_models(a, b)</code></td><td>Global L2/cosine distance plus per-layer drift. <code>.top_changed_layers()</code>, <code>.summary()</code>.</td></tr>
 <tr><td><code>task_vector(base, tuned)</code></td><td>The fine-tune as a vector: tuned minus base.</td></tr>
@@ -152,19 +167,19 @@ so it works on models where the full Hessian could never be materialized.</div>
 <tr><td><code>task_vector_alignment(v1, v2)</code></td><td>Do two fine-tunes push the model the same way (cosine)?</td></tr>
 <tr><td><code>model_soup(models, weights)</code></td><td>Parameter averaging of checkpoints that share a basin (check with <code>loss_barrier_matrix</code> first).</td></tr>
 <tr><td><code>eigenvector_overlap(spec_a, spec_b, k)</code></td><td>Did the curvature directions change between checkpoints? Needs spectra from <code>power_iteration</code>.</td></tr>
-</table>
+</table></div>
 
-<h2 id="probes"><span class="hash">#</span>probes</h2>
-<table>
+<h2 id="probes">probes</h2>
+<div class="tablewrap"><table>
 <tr><th>Function</th><th>Description</th></tr>
 <tr><td><code>random_direction(model, seed)</code></td><td>Unit Gaussian direction in parameter space.</td></tr>
 <tr><td><code>filter_normalize(direction, model)</code></td><td>Rescale a direction layer-by-layer to match weight norms (Li et al.), removing scale artifacts.</td></tr>
 <tr><td><code>orthogonalize(directions)</code></td><td>Gram-Schmidt orthonormal basis.</td></tr>
 <tr><td><code>concept_direction(positives, negatives)</code></td><td>Difference-of-means direction in an activation space.</td></tr>
 <tr><td><code>class_separating_axis(X, labels, a, b)</code></td><td>Direction separating two classes in representation space.</td></tr>
-</table>
+</table></div>
 
-<h2 id="metrics"><span class="hash">#</span>metrics</h2>
+<h2 id="metrics">metrics</h2>
 <pre><code>@ng.register_metric(<span class="s">"my_metric"</span>)
 <span class="k">def</span> my_metric(X):
     <span class="k">return</span> <span class="k">float</span>(...)
@@ -175,26 +190,26 @@ ng.compute_metrics(X, [<span class="s">"effective_rank"</span>, <span class="s">
 <code>intrinsic_dimension</code>, <code>uniformity</code>, <code>stable_rank</code>.
 List them with <code>ng.list_metrics()</code>.</p>
 
-<h2 id="data"><span class="hash">#</span>data</h2>
-<table>
+<h2 id="data">data</h2>
+<div class="tablewrap"><table>
 <tr><th>Function</th><th>Description</th></tr>
 <tr><td><code>stratified_indices(labels, per_class, seed)</code></td><td>Balanced subsample across classes.</td></tr>
 <tr><td><code>representative_subset(X, n, seed)</code></td><td>Greedy farthest-point sampling: few, diverse probe examples.</td></tr>
 <tr><td><code>synthetic_probes(n, dim, kind, seed)</code></td><td>Gaussian, sphere, or interpolation-line probe inputs.</td></tr>
 <tr><td><code>batch_iterator(X, y, batch_size, seed)</code></td><td>Shuffled minibatches for gradient statistics.</td></tr>
-</table>
+</table></div>
 
-<h2 id="surfaces"><span class="hash">#</span>surfaces</h2>
+<h2 id="surfaces">surfaces</h2>
 <p>Sample <em>any</em> scalar over parameter space, not just loss: accuracy, entropy, a custom metric.</p>
-<table>
+<div class="tablewrap"><table>
 <tr><th>Function</th><th>Description</th></tr>
 <tr><td><code>scalar_field_1d(model, field_fn, direction, span, steps)</code></td><td>field_fn(model) along a direction.</td></tr>
 <tr><td><code>scalar_field_2d(model, field_fn, d1, d2, span, steps)</code></td><td>field_fn(model) over a plane.</td></tr>
-</table>
+</table></div>
 
-<h2 id="visualize"><span class="hash">#</span>visualize</h2>
+<h2 id="visualize">visualize</h2>
 <p>Requires matplotlib (<code>pip install nngeom[viz]</code>). Result objects also expose <code>.plot()</code> directly.</p>
-<table>
+<div class="tablewrap"><table>
 <tr><th>Function</th><th>Description</th></tr>
 <tr><td><code>plot_curve(curve)</code></td><td>1-D loss slice or interpolation curve.</td></tr>
 <tr><td><code>plot_surface(surface, kind)</code></td><td>2-D landscape as <code>"contour"</code> or <code>"heatmap"</code>.</td></tr>
@@ -203,17 +218,17 @@ List them with <code>ng.list_metrics()</code>.</p>
 <tr><td><code>plot_cka_matrix(cka_result)</code></td><td>Layer similarity heatmap.</td></tr>
 <tr><td><code>plot_layer_bars(values)</code></td><td>Bar chart over named layers (norms, drift, curvature).</td></tr>
 <tr><td><code>plot_embedding(X, labels)</code></td><td>2-D PCA scatter colored by label.</td></tr>
-</table>
+</table></div>
 
-<h2 id="export"><span class="hash">#</span>export</h2>
-<table>
+<h2 id="export">export</h2>
+<div class="tablewrap"><table>
 <tr><th>Function</th><th>Description</th></tr>
 <tr><td><code>to_json(obj, path)</code></td><td>Any nngeom result to JSON (numpy types handled).</td></tr>
 <tr><td><code>to_csv(table, path)</code></td><td>Nested dict {row: {col: value}} to CSV, e.g. layer drift tables.</td></tr>
 <tr><td><code>report_html(report, path)</code></td><td>Standalone HTML with figures embedded as base64 PNGs.</td></tr>
-</table>
+</table></div>
 
-<h2 id="report"><span class="hash">#</span>report</h2>
+<h2 id="report">report</h2>
 <pre><code>report = ng.analyze(
     model,
     batch,                      <span class="c"># enables loss + curvature sections</span>
@@ -229,7 +244,14 @@ report.to_html(<span class="s">"report.html"</span>)</code></pre>
 representation collapse, extreme anisotropy, very sharp basins, models not at a local
 minimum, and oscillating optimization, and it suggests the next experiments to run.</p>
 
-<footer>nngeom 0.2.0 &middot; <a href="index.html">Overview</a> &middot; <a href="nlp.html">NLP geometry</a> &middot; <a href="examples.html">Examples</a></footer>
+<div class="colophon">
+  <span>nngeom v0.2 &middot; API reference</span>
+  <span class="links">
+    <a href="index.html">Overview</a>
+    <a href="nlp.html">NLP geometry</a>
+    <a href="examples.html">Examples</a>
+  </span>
+</div>
 </main>
 </div>
 </body>
